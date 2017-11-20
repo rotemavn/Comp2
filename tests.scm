@@ -48,12 +48,12 @@
 ))		
 
 (define constTests
-	(list '() #f #\a 34 "abc" '(quote a) '(quote (a b c)) '(quote (quote a b c)))
+	(list ''() #f #\a 34 "abc" '(quote a) '(quote (a b c)) '(quote (quote a b c)))
 )
 (define varTests
 	(list 'abc '123x)
 )
-(define condTests
+(define conditionalsTests
 	(list 	'(if a b c)
 			'(if (if a b c)
 				'x
@@ -126,12 +126,12 @@
   (list
       (cons "Constants" constTests)
       (cons "Variables" varTests)
-      (cons "Conditionals" condTests)
-      (cons "Disjunctions" disjTests)
-      (cons "Lambda" lambdaTests)
-      (cons "Define" defTests)
+      (cons "Conditionals" conditionalsTests)
+     ; (cons "Disjunctions" disjTests)
+     ; (cons "Lambda" lambdaTests)
+     ; (cons "Define" defTests)
       (cons "Assignments" assTests)
-      (cons "Applications" appTests)
+     ; (cons "Applications" appTests)
      ; (cons "Sequences" seqTests)
       ;(cons "let" letTests)
       ;(cons "let*" letStarTests)
