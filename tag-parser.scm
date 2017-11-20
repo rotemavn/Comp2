@@ -63,23 +63,11 @@
 )
 
 
-(define parse-conditionalExp3
- (lambda (exp)
-    (append (cons 'if3 '()) (map parse (cdr exp)) (cons (list 'const (void)) '())) 
-  )
-)
-
-(define parse-conditionalExp4
- (lambda (exp)
-    (append (cons 'if3 '()) (map parse (cdr exp)))
-  )
-)
-
 (define parse-conditionalExp
   (lambda (exp)
     (if (= (length exp) 3)
-      (parse-conditionalExp3 exp)
-      (parse-conditionalExp4 exp)
+      (append (cons 'if3 '()) (map parse (cdr exp)) (cons (list 'const (void)) '()))
+      (append (cons 'if3 '()) (map parse (cdr exp)))
     )
   )
 )
