@@ -12,11 +12,12 @@
     ((assignmentExp? exp) (parse-assignmentExp exp))
     ((applicationExp? exp) (parse-applicationExp exp))
     ((sequenceExp? exp) (parse-sequenceExp exp))
+    ((andExp? exp) (parse-andExp exp))
+    ((condExp? exp) (parse-condExp exp))
     (else 'error!)
     )
   )
 )
-
 
 (define quoted?
   (lambda (exp)
@@ -74,13 +75,16 @@
 
 (define disjunctionExp?
   (lambda (exp)
-    #f
+    (and (list? exp) (equal? 'or (car exp)))
   )
 )
 
 (define parse-disjunctionExp
   (lambda (exp)
-    'disjunctionExp
+  (cond
+    ((= 1 (length exp)) (parse #f))
+    ((= 2 (length exp)) (parse (cadr exp)))
+    (else (append (cons 'or '()) (cons (map parse (cdr exp)) '()))))
   )
 )
 
@@ -143,4 +147,64 @@
     'constantExp
   )
 )
+
+(define andExp?
+  (lambda (exp)
+    (and (list? exp) (equal? 'and (car exp)))
+  )
+)
+
+(define create-andif-exp 
+  (lambda (lst)
+    (if (= 1 (length lst)) (car lst)
+    (list 'if (car lst) (create-andif-exp (cdr lst)) #f)
+    )
+  )
+)
+
+(define parse-andExp
+  (lambda (exp)
+    (cond
+      ((= 1 (length exp)) (parse #t))
+      ((= 2 (length exp)) (parse (cadr exp)))
+      (else
+        (parse (create-andif-exp (cdr exp)))
+      )
+    )
+  )
+)
+
+(define condExp?
+  (lambda (exp)
+    (and (list? exp) (equal? 'cond (car exp)))
+  )
+)
+
+(define create-condif-exp 
+  (lambda (lst)
+    (let 
+        ((unit (car lst)))
+        (if (equal? 'else (car unit))
+            (append (cons 'begin '()) (cdr unit))
+            (if (= 1 (length lst))
+              (list 'if (car unit) (append (cons 'begin '()) (cdr unit)))
+              (list 'if (car unit) (append (cons 'begin '()) (cdr unit)) (create-condif-exp (cdr lst)))
+            )
+        )
+    )  
+  )
+)
+
+(define parse-condExp
+  (lambda (exp)  
+    (let 
+      ((lst (cdr exp)))
+      (if (null? lst) lst
+      (parse (create-condif-exp lst))
+      )
+    )
+  )
+)
+
+
 
