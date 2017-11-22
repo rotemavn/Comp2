@@ -8,6 +8,7 @@
     ((conditionalExp? exp) (parse-conditionalExp exp))
     ((disjunctionExp? exp) (parse-disjunctionExp exp))
     ((lambdaExp? exp) (parse-lambdaExp exp))
+    ((defMITExp? exp) (parse-defMITExp exp))     
     ((defineExp? exp) (parse-defineExp exp))
     ((assignmentExp? exp) (parse-assignmentExp exp))
     ((applicationExp? exp) (parse-applicationExp exp))
@@ -18,6 +19,34 @@
     )
   )
 )
+
+;;;Helper Methods;;;
+
+(define first 
+  (lambda (lst)
+    (car lst)
+  )
+)
+
+(define second 
+  (lambda (lst)
+    (cadr lst)
+  )
+)
+
+(define third 
+  (lambda (lst)
+    (caddr lst)
+  )
+)
+
+(define fourth 
+  (lambda (lst)
+    (cadddr lst)
+  )
+)
+
+;;;;;;;;;;;;;;;;;;;;
 
 (define quoted?
   (lambda (exp)
@@ -83,7 +112,7 @@
   (lambda (exp)
   (cond
     ((= 1 (length exp)) (parse #f))
-    ((= 2 (length exp)) (parse (cadr exp)))
+    ((= 2 (length exp)) (parse (second exp)))
     (else (append (cons 'or '()) (cons (map parse (cdr exp)) '()))))
   )
 )
@@ -120,7 +149,7 @@
 
 (define parse-assignmentExp
   (lambda (exp)
-    (list 'set (list 'var (cadr exp)) (parse (caddr exp)))
+    (list 'set (list 'var (second exp)) (parse (caddr exp)))
   )
 )
 
@@ -166,7 +195,7 @@
   (lambda (exp)
     (cond
       ((= 1 (length exp)) (parse #t))
-      ((= 2 (length exp)) (parse (cadr exp)))
+      ((= 2 (length exp)) (parse (second exp)))
       (else
         (parse (create-andif-exp (cdr exp)))
       )
@@ -201,6 +230,28 @@
       ((lst (cdr exp)))
       (if (null? lst) lst
       (parse (create-condif-exp lst))
+      )
+    )
+  )
+)
+
+(define defMITExp?
+  (lambda (exp)
+    (and 
+    (list? exp) 
+    (equal? 'define (car exp))
+    (= 3 (length exp))
+    ;(applicationExp? (second exp))
+    (not (equal? 'lambda (car (third exp))))
+    )
+  )
+)
+
+(define parse-defMITExp
+  (lambda (exp)  
+    (parse 
+      (list 'define (first (second exp)) 
+      (list 'lambda (cdr (second exp)) (third exp))
       )
     )
   )
