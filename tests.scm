@@ -134,17 +134,11 @@
 		'(define x 5)
 		'(define x (lambda (x) x))
 		'(define (id x) x)
-		'(define (foo x y z)
-			(if x y z))
-		'(define (foo x y . z)
-			(if x y z))
-		'(define (list . args)
-			args)
-			 ;regular-define
+		'(define (foo x y z)(if x y z))
+		'(define (foo x y . z)(if x y z))
+		'(define (list . args)args)
 		'(define a b c d)
 		'(define a (b c d))
-		
-		;mit-style-define
 		'(define (id x) x y)
 		'(define (foo x y z) (if x y z))
 		'(define (foo x y . z) (if x y z) #t)
@@ -201,8 +195,7 @@
     '(letrec ((x 1) (y 2) (a 5)) b1 b2 (or 1 2 3) (if 1 2 3) #t)
 )
 )
-(define letStarTests)
-(define letrecTests)
+
 (define andTests
 	(list
 	`(and)
@@ -403,22 +396,20 @@
 
 (runAllTests
   (list
-      (cons "Constants" constTests)
-      (cons "Variables" varTests)
-      (cons "Conditionals" conditionalsTests)
-      (cons "Disjunctions" disjTests)
+      ;(cons "Constants" constTests)
+      ;(cons "Variables" varTests)
+      ;(cons "Conditionals" conditionalsTests)
+      ;(cons "Disjunctions" disjTests)
      ; (cons "Lambda" lambdaTests)
      ; (cons "Define" defTests)
-      (cons "Assignments" assTests)
+      ;(cons "Assignments" assTests)
      ; (cons "Applications" appTests)
       ;(cons "Sequences" seqTests)
-      ;(cons "let" letTests)
-      ;(cons "let*" letStarTests)
-      ;(cons "letrec" letrecTests)
-      (cons "and" andTests)        
+      (cons "let" letTests)
+      ;(cons "and" andTests)        
       ;(cons "cond" condTests) 
-      ;(cons "Mit define" defMITExpTests)              
-      ;(cons "quasiquoted" quasiTests)    
+              
+      (cons "quasiquoted" quasiTests)    
 
 
 
